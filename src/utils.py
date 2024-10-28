@@ -8,7 +8,7 @@ def read_image_file_list(file_path):
     image_files = []
     for line in lines:
         if line.startswith('#') or line.strip() == '':
-            continue  # Skip comments and empty lines
+            continue  
         parts = line.strip().split()
         timestamp = float(parts[0])
         filename = parts[1]
@@ -25,3 +25,4 @@ def load_images(image_dir, image_file_list):
         else:
             print(f"Warning: Could not load image {image_path}")
     return images
+
