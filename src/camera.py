@@ -5,7 +5,7 @@ import cv2
 
 class Camera:
     def __init__(self):
-        # Camera parameters
+        # camera params
         self.fx = 517.3
         self.fy = 516.5
         self.cx = 318.6
@@ -16,14 +16,14 @@ class Camera:
         self.d3 = 0.0026
         self.d4 = 1.1633
 
-        # Construct camera intrinsic matrix
+        # intrinsic matrix
         self.camera_matrix = np.array([
             [self.fx,  0,  self.cx],
             [0, self.fy,  self.cy],
             [0,  0,   1]
         ], dtype=np.float64)
 
-        # Distortion coefficients
+        # distortion coefficients
         self.dist_coeffs = np.array([self.d0, self.d1, self.d2, self.d3, self.d4], dtype=np.float64)
 
     def undistort_image(self, image):
