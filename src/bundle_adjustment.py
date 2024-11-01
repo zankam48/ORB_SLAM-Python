@@ -172,3 +172,47 @@ class Optimizer:
         # Update map point positions
         for idx, p in enumerate(map_points):
             p.position = optimized_point_3d[idx]
+
+
+# learn opencv
+def vertex_to_points(optimizer, first_point_id, last_point_id): 
+    """ Converts g2o point vertices to their current 3d point estimates. """
+    vertices_dict = optimizer.vertices()
+    estimated_points = list()
+    for idx in range(first_point_id, last_point_id): 
+        estimated_points.append(vertices_dict[idx].estimate())
+    estimated_points = np.array(estimated_points)
+    xs, ys, zs = estimated_points.T
+    return xs, ys, zs 
+ 
+ipv.show()
+for i in range(100):
+    optimizer.optimize(1)
+    xs, ys, zs = vertex_to_points(optimizer, first_point_id, last_point_id)
+    scatter_plot.x = xs 
+    scatter_plot.y = ys 
+    scatter_plot.z = zs 
+    time.sleep(0.25)
+
+def compute_reprojection_error(intrinsics, extrinsics, points_3d, observations):
+    total_error = 0  # Initialize the total error to zero
+    num_points = 0  # Initialize the number of points to zero
+     
+    # Iterate through each camera's extrinsics and corresponding 2D observations
+    for (rotation, translation), obs in zip(extrinsics, observations):
+        # Project the 3D points to 2D using the current camera's intrinsics and extrinsics
+        projected_points = project_points(points_3d, intrinsics, rotation, translation)
+         
+        # Calculate the Euclidean distance (reprojection error) between the projected points and the observed points
+        error = np.linalg.norm(projected_points - obs, axis=1)
+         
+        # Accumulate the total error
+        total_error += np.sum(error)
+         
+        # Accumulate the total number of points
+        num_points += len(points_3d)
+     
+    # Calculate the mean reprojection error
+    mean_error = total_error / num_points
+     
+    return mean_error  # Return the mean reprojection error
