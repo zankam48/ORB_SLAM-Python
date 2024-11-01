@@ -2,6 +2,7 @@
 
 import numpy as np
 from scipy.optimize import least_squares
+import cv2
 
 class Optimizer:
     def __init__(self, camera_matrix):
