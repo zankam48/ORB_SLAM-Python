@@ -21,6 +21,7 @@ class FeatureMatcher:
         matches = sorted(matches, key=lambda x: x.distance)
         return matches
     
+    
 
 def extract_orb_features(images):
     orb = cv2.ORB_create(nfeatures=1000)
@@ -34,6 +35,18 @@ def extract_orb_features(images):
         keypoints_list.append((timestamp, keypoints))
         descriptors_list.append((timestamp, descriptors))
     return keypoints_list, descriptors_list
+
+def extract(img):
+    orb = cv2.ORB_create()
+ 
+    # Detection
+    pts = cv2.goodFeaturesToTrack(np.mean(img, axis=-1).astype(np.uint8), 1000, qualityLevel=0.01, minDistance=10)
+ 
+    # Extraction
+    kps = [cv2.KeyPoint(f[0][0], f[0][1], 20) for f in pts]
+    kps, des = orb.compute(img, kps)
+ 
+    return np.array([(kp.pt[0], kp.pt[1]) for kp in kps]), des
 
 def visualize_keypoints(images, keypoints_list):
     for (timestamp, image), (_, keypoints) in zip(images, keypoints_list):

@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from src.frame import Frame
 from src.map import Map
-from src.pose_estimator import PoseEstimator
+from pose_estimator import PoseEstimator
 
 class Tracking:
     def __init__(self, camera, feature_extractor, map):

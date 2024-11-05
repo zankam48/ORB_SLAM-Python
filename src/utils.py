@@ -29,6 +29,10 @@ def load_images(image_dir, image_file_list):
 
 def add_ones(pts):
     return np.hstack([pts, np.ones((pts.shape[0], 1))])
+
+def add_ones(x):
+    # creates homogenious coordinates given the point x
+    return np.concatenate([x, np.ones((x.shape[0], 1))], axis=1)
  
 def triangulate(pose1, pose2, pts1, pts2):
     # Initialize the result array to store the homogeneous coordinates of the 3D points
@@ -57,3 +61,15 @@ def triangulate(pose1, pose2, pts1, pts2):
  
     # Return the 3D points in homogeneous coordinates
     return ret
+
+def normalize(Kinv, pts):
+    # The inverse camera intrinsic matrix 𝐾^(−1) transforms 2D homogeneous points 
+    # from pixel coordinates to normalized image coordinates. 
+    return np.dot(Kinv, add_ones(pts).T).T[:, 0:2]
+
+def denormalize(K, pt):
+    # Converts a normalized point to pixel coordinates by applying the 
+    # intrinsic camera matrix and normalizing the result.
+    ret = np.dot(K, [pt[0], pt[1], 1.0])
+    ret /= ret[2]
+    return int(round(ret[0])), int(round(ret[1]))
