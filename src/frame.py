@@ -65,7 +65,7 @@ def match_frames(f1, f2):
     idx1, idx2 = [], []
     for m, n in matches:
         if m.distance < 0.75*n.distance:
-            p1 = f1.pts[m.queryIdx]
+            p1 = f1.pts[m.queryIdx] 
             p2 = f2.pts[m.trainIdx]
              
             # Distance test
