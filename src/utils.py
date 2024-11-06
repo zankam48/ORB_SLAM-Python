@@ -42,7 +42,6 @@ def triangulate(pose1, pose2, pts1, pts2):
     pose1 = np.linalg.inv(pose1)
     pose2 = np.linalg.inv(pose2)
  
-    # Loop through each pair of corresponding points
     for i, p in enumerate(zip(add_ones(pts1), add_ones(pts2))):
         # Initialize the matrix A to hold the linear equations
         A = np.zeros((4, 4))
@@ -68,8 +67,7 @@ def normalize(Kinv, pts):
     return np.dot(Kinv, add_ones(pts).T).T[:, 0:2]
 
 def denormalize(K, pt):
-    # Converts a normalized point to pixel coordinates by applying the 
-    # intrinsic camera matrix and normalizing the result.
+    # Converts a normalized point to pixel coordinates by applying the intrinsic camera matrix and normalizing the result.
     ret = np.dot(K, [pt[0], pt[1], 1.0])
     ret /= ret[2]
     return int(round(ret[0])), int(round(ret[1]))
