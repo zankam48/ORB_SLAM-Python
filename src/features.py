@@ -17,9 +17,13 @@ class FeatureMatcher:
         self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
     def match_features(self, descriptors1, descriptors2):
-        matches = self.matcher.match(descriptors1, descriptors2)
-        matches = sorted(matches, key=lambda x: x.distance)
-        return matches
+        matches = self.matcher.knnMatch(descriptors1, descriptors2, k=2)
+        # Apply Lowe's ratio test
+        good_matches = []
+        for m, n in matches:
+            if m.distance < 0.75 * n.distance:
+                good_matches.append(m)
+        return good_matches
     
     
 
