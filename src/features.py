@@ -27,19 +27,6 @@ class FeatureMatcher:
     
     
 
-def extract_orb_features(images):
-    orb = cv2.ORB_create(nfeatures=1000)
-    keypoints_list = []
-    descriptors_list = []
-    for timestamp, image in images:
-
-        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        keypoints, descriptors = orb.detectAndCompute(gray_image, None)
-        keypoints_list.append((timestamp, keypoints))
-        descriptors_list.append((timestamp, descriptors))
-    return keypoints_list, descriptors_list
-
 def extract(img):
     orb = cv2.ORB_create()
  
