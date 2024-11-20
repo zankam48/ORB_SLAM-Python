@@ -14,7 +14,7 @@ class FeatureExtractor:
 
 class FeatureMatcher:
     def __init__(self):
-        self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False) # previosly True
 
     def match_features(self, descriptors1, descriptors2):
         matches = self.matcher.knnMatch(descriptors1, descriptors2, k=2)
@@ -30,13 +30,22 @@ class FeatureMatcher:
 def extract(img):
     orb = cv2.ORB_create()
  
-    # Detection
-    pts = cv2.goodFeaturesToTrack(np.mean(img, axis=-1).astype(np.uint8), 1000, qualityLevel=0.01, minDistance=10)
+    # convert img to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # detection
+    pts = cv2.goodFeaturesToTrack(gray, 1000, qualityLevel=0.01, minDistance=10)
  
-    # Extraction
+    if pts is None:
+        return [], None
+    
+    # extraction
     kps = [cv2.KeyPoint(f[0][0], f[0][1], 20) for f in pts]
-    kps, des = orb.compute(img, kps)
+    kps, des = orb.compute(gray, kps)
  
+    if des is None:
+        return [], None
+
     return np.array([(kp.pt[0], kp.pt[1]) for kp in kps]), des
 
 def visualize_keypoints(images, keypoints_list):
